@@ -657,6 +657,15 @@ table.heatmap td.diag { background: var(--grid); color: var(--text-secondary); }
   margin-bottom: 20px;
 }
 
+/* Carte de tutoriel */
+.card.tutorial {
+  border-left: 3px solid var(--accent);
+  margin-bottom: 24px;
+}
+.tutorial-steps { margin: 0 0 10px; padding-left: 22px; }
+.tutorial-steps li { margin-bottom: 6px; font-size: 14px; color: var(--text-secondary); }
+.tutorial-steps li strong { color: var(--text-primary); }
+
 details.help { margin-bottom: 16px; }
 details.help summary { cursor: pointer; color: var(--accent); font-size: 13.5px; font-weight: 600; }
 details.help .card { margin-top: 10px; }

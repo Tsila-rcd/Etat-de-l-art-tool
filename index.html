@@ -19,6 +19,7 @@
     <button data-tab="bord">📊 Tableau de bord</button>
   </nav>
   <div class="topbar-actions">
+    <button class="btn small ghost" id="btnHelp" title="Revoir le tutoriel">❓ Tutoriel</button>
     <button class="btn small" id="btnImport">Importer…</button>
     <button class="btn small" id="btnExport">Exporter</button>
   </div>
@@ -29,6 +30,26 @@
   <!-- ============ CAPTURE ============ -->
   <section id="tab-capture" class="tab">
     <div class="tab-inner">
+
+      <div class="card tutorial" id="tutorialCard" hidden>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <h3 style="margin:0 0 8px">👋 Bienvenue dans Cartographe</h3>
+          <button class="btn ghost small" id="tutorialClose" title="Fermer">✕</button>
+        </div>
+        <p style="margin:0 0 8px">Cartographe fonctionne pour <strong>n'importe quel sujet</strong> de recherche ou d'écriture. Le principe, en quatre temps :</p>
+        <ol class="tutorial-steps">
+          <li><strong>Déposez</strong> vos ressources sans réfléchir — collage libre, fichier .bib, formulaire. Tout arrive dans la boîte de tri : rien ne se perd.</li>
+          <li><strong>Triez</strong> quand vous voulez : cliquez les thèmes suggérés automatiquement, ou tapez les vôtres.</li>
+          <li><strong>Regardez la Carte</strong> : vos thèmes s'organisent en familles reliées par les sources qui les partagent.</li>
+          <li><strong>Lisez les Angles morts</strong> : les croisements que votre corpus ne couvre pas encore — vos angles d'attaque potentiels.</li>
+        </ol>
+        <p class="hint" style="margin-bottom:12px">Pour voir tout cela sur un cas réel, chargez le corpus du tutoriel : il reconstitue l'état de l'art d'un mémoire sur <em>les outils numériques et la mise en avant des créateurs de mode africaine</em>. Une fois chargé, ouvrez <strong>🎯 Angles morts</strong> : le croisement « outils numériques × mode africaine » y ressort comme pont entre familles… et c'était précisément le sujet de ce mémoire.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary" id="btnLoadTutorial">Charger le corpus du tutoriel</button>
+          <button class="btn" id="btnStartBlank">Commencer avec mes propres sources</button>
+        </div>
+      </div>
+
       <h2>Déposer des ressources</h2>
       <p class="hint">Collez n'importe quoi, classez plus tard. Rien ne se perd : tout arrive dans la boîte de tri.</p>
 
@@ -45,7 +66,6 @@
               <textarea id="quickPaste" placeholder="…ou collez ici : une référence, un extrait avec son titre, des entrées BibTeX, une URL + titre — puis « Déposer »."></textarea>
             </div>
             <button class="btn primary" id="btnQuickAdd">Déposer dans la boîte de tri</button>
-            <button class="btn ghost" id="btnLoadSample">Charger le corpus d'exemple</button>
           </div>
 
           <hr class="sep">

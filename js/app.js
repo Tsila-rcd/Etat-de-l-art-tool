@@ -764,6 +764,53 @@
     });
   }
 
+  /* ================= tutoriel ================= */
+
+  const TUT_KEY = 'cartographe-tutorial-dismissed';
+
+  function showTutorial(show) {
+    $('#tutorialCard').hidden = !show;
+  }
+
+  function initTutorial() {
+    // visible tant que l'utilisateur ne l'a pas fermé (et toujours à la première visite)
+    let dismissed = false;
+    try { dismissed = !!localStorage.getItem(TUT_KEY); } catch (e) { /* stockage indisponible */ }
+    showTutorial(!dismissed);
+
+    const dismiss = () => {
+      try { localStorage.setItem(TUT_KEY, '1'); } catch (e) { /* ignoré */ }
+      showTutorial(false);
+    };
+
+    $('#tutorialClose').addEventListener('click', dismiss);
+    $('#btnStartBlank').addEventListener('click', dismiss);
+
+    $('#btnHelp').addEventListener('click', () => {
+      showTutorial(true);
+      switchTab('capture');
+      $('#tutorialCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    $('#btnLoadTutorial').addEventListener('click', () => {
+      if (state.sources.length &&
+          !confirm('Ajouter le corpus du tutoriel aux sources existantes ?')) return;
+      const wasEmpty = state.sources.length === 0;
+      TUTORIAL_DATA.sources.forEach(e => {
+        Store.addSource({
+          title: e.title, authors: e.authors, year: e.year, type: e.type,
+          abstract: e.abstract, status: e.status, importance: e.importance,
+          themes: labelsToThemeIds(e.themeLabels)
+        });
+      });
+      if (wasEmpty) {
+        Store.setProjectName(TUTORIAL_DATA.projectName);
+        $('#projectName').value = TUTORIAL_DATA.projectName;
+      }
+      toast('Corpus du tutoriel chargé — explorez la Carte, puis les Angles morts.');
+    });
+  }
+
   /* ================= export / import ================= */
 
   function doExport() {
@@ -795,19 +842,7 @@
       $('#quickPaste').value = '';
     });
 
-    $('#btnLoadSample').addEventListener('click', () => {
-      if (state.sources.length &&
-          !confirm('Ajouter le corpus d\'exemple aux sources existantes ?')) return;
-      SAMPLE_DATA.sources.forEach(e => {
-        Store.addSource({
-          title: e.title, authors: e.authors, year: e.year, type: e.type,
-          abstract: e.abstract, status: e.status, importance: e.importance,
-          themes: labelsToThemeIds(e.themeLabels)
-        });
-      });
-      if (!state.sources.length) Store.setProjectName(SAMPLE_DATA.projectName);
-      toast('Corpus d\'exemple chargé — allez voir la Carte et les Angles morts.');
-    });
+    initTutorial();
 
     // zone de dépôt de fichiers
     const dz = $('#dropzone');

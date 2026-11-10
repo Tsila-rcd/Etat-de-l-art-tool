@@ -16,8 +16,16 @@ Aucune installation, aucun serveur, aucun compte :
 
 1. Téléchargez ou clonez ce dépôt.
 2. Ouvrez `index.html` dans un navigateur (Chrome, Firefox, Edge…).
-3. Cliquez « Charger le corpus d'exemple » pour voir l'outil en action,
-   puis explorez les onglets **Carte** et **Angles morts**.
+3. À la première visite, un tutoriel s'affiche : cliquez « Charger le corpus
+   du tutoriel » pour voir l'outil en action, puis explorez les onglets
+   **Carte** et **Angles morts**. (Le bouton « ❓ Tutoriel » le rouvre à tout moment.)
+
+L'outil est **neutre** : il fonctionne pour n'importe quel sujet. Le corpus du
+tutoriel, lui, reconstitue l'état de l'art d'un mémoire réel — *les outils
+numériques et la mise en avant des créateurs de mode africaine*, cartographié à
+l'origine avec Gargantext. Il sert aussi de démonstration par l'exemple : une
+fois chargé, l'onglet Angles morts fait ressortir le croisement
+« outils numériques × mode africaine »… qui était précisément le sujet de ce mémoire.
 
 Les données restent **dans votre navigateur** (localStorage). Rien ne part sur un serveur.
 
@@ -77,5 +85,5 @@ js/analysis.js    — extraction de termes, co-occurrences, communautés, angles
 js/bibtex.js      — analyseur BibTeX tolérant
 js/graph.js       — carte des thèmes (force layout D3)
 js/app.js         — interface
-js/sample.js      — corpus d'exemple
+js/sample.js      — corpus du tutoriel
 ```
