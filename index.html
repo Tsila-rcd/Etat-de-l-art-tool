@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartographe — État de l'art</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">🗺️ <strong>Cartographe</strong><span class="sub">état de l'art</span></div>
+  <input id="projectName" class="project-name" title="Nom du projet" />
+  <nav class="tabs" id="tabsNav">
+    <button data-tab="capture">📥 Capture</button>
+    <button data-tab="sources">📚 Sources <span id="countSources" class="badge">0</span></button>
+    <button data-tab="carte">🕸️ Carte</button>
+    <button data-tab="angles">🎯 Angles morts</button>
+    <button data-tab="bord">📊 Tableau de bord</button>
+  </nav>
+  <div class="topbar-actions">
+    <button class="btn small" id="btnImport">Importer…</button>
+    <button class="btn small" id="btnExport">Exporter</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ CAPTURE ============ -->
+  <section id="tab-capture" class="tab">
+    <div class="tab-inner">
+      <h2>Déposer des ressources</h2>
+      <p class="hint">Collez n'importe quoi, classez plus tard. Rien ne se perd : tout arrive dans la boîte de tri.</p>
+
+      <div class="capture-grid">
+        <div>
+          <div class="card quick-paste">
+            <h3>⚡ Dépôt rapide</h3>
+            <div class="dropzone" id="dropzone">
+              Glissez ici un fichier <strong>.bib</strong> (Zotero, Mendeley…), <strong>.json</strong> (export Cartographe)
+              ou <strong>.txt</strong> — ou cliquez pour choisir un fichier.
+              <input type="file" id="fileInput" accept=".bib,.json,.txt,.bibtex" hidden multiple>
+            </div>
+            <div class="field">
+              <textarea id="quickPaste" placeholder="…ou collez ici : une référence, un extrait avec son titre, des entrées BibTeX, une URL + titre — puis « Déposer »."></textarea>
+            </div>
+            <button class="btn primary" id="btnQuickAdd">Déposer dans la boîte de tri</button>
+            <button class="btn ghost" id="btnLoadSample">Charger le corpus d'exemple</button>
+          </div>
+
+          <hr class="sep">
+
+          <div class="card">
+            <h3>📝 Ajout détaillé</h3>
+            <div class="field">
+              <label for="fTitle">Titre *</label>
+              <input type="text" id="fTitle" placeholder="Titre de la source">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="fAuthors">Auteur·es</label>
+                <input type="text" id="fAuthors" placeholder="Nom, Nom…">
+              </div>
+              <div class="field" style="max-width:110px">
+                <label for="fYear">Année</label>
+                <input type="text" id="fYear" placeholder="2023" inputmode="numeric">
+              </div>
+              <div class="field" style="max-width:150px">
+                <label for="fType">Type</label>
+                <select id="fType">
+                  <option value="article">Article</option>
+                  <option value="ouvrage">Ouvrage</option>
+                  <option value="chapitre">Chapitre</option>
+                  <option value="these">Thèse / mémoire</option>
+                  <option value="rapport">Rapport</option>
+                  <option value="web">Page web</option>
+                  <option value="video">Vidéo / podcast</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="fUrl">Lien (URL ou DOI)</label>
+              <input type="url" id="fUrl" placeholder="https://…">
+            </div>
+            <div class="field">
+              <label for="fAbstract">Résumé / extrait clé</label>
+              <textarea id="fAbstract" rows="3" placeholder="Collez le résumé ou le passage important — il sert aussi à suggérer des thèmes."></textarea>
+            </div>
+            <div class="field">
+              <label for="fNotes">Notes personnelles</label>
+              <textarea id="fNotes" rows="2" placeholder="Pourquoi cette source compte pour le livre ?"></textarea>
+            </div>
+            <div class="field">
+              <label>Thèmes</label>
+              <div id="fThemes"></div>
+              <div class="suggestions" id="fSuggestions"></div>
+            </div>
+            <button class="btn primary" id="btnAddDetailed">Ajouter la source</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h3>📥 Boîte de tri <span class="badge" id="inboxCount">0</span></h3>
+            <p class="hint" style="margin-bottom:12px">Sources déposées mais pas encore classées. Cliquez une suggestion pour l'ajouter comme thème, puis validez.</p>
+            <div class="inbox-list" id="inboxList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="tab-sources" class="tab">
+    <div class="tab-inner">
+      <h2>Sources</h2>
+      <p class="hint">Toutes vos ressources, filtrables par thème et statut de lecture.</p>
+      <div class="toolbar">
+        <input type="search" id="srcSearch" placeholder="Rechercher…">
+        <select id="srcThemeFilter"><option value="">Tous les thèmes</option></select>
+        <select id="srcStatusFilter">
+          <option value="">Tous les statuts</option>
+          <option value="inbox">📥 À classer</option>
+          <option value="a_lire">À lire</option>
+          <option value="lu">Lu</option>
+          <option value="exploite">Exploité dans le livre</option>
+        </select>
+        <select id="srcSort">
+          <option value="recent">Plus récentes d'abord</option>
+          <option value="year">Par année de publication</option>
+          <option value="title">Par titre</option>
+          <option value="importance">Par importance</option>
+        </select>
+      </div>
+      <div class="source-grid" id="sourceGrid"></div>
+      <div class="empty-state" id="sourcesEmpty" hidden>
+        <div class="big">📚</div>
+        Aucune source pour l'instant.<br>Passez par l'onglet <strong>Capture</strong> pour en déposer.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARTE ============ -->
+  <section id="tab-carte" class="tab">
+    <div class="graph-main">
+      <div class="graph-controls">
+        <span><label for="minCooc">Lien minimum :</label>
+          <input type="range" id="minCooc" min="1" max="5" value="1" step="1">
+          <span id="minCoocVal">1</span> co-occurrence(s)</span>
+        <span><input type="checkbox" id="showIsolated" checked> <label for="showIsolated">thèmes isolés</label></span>
+        <button class="btn small" id="btnRecenter">Recentrer</button>
+        <button class="btn small" id="btnExportSvg">Exporter SVG</button>
+      </div>
+      <svg id="graphSvg"></svg>
+      <div class="legend" id="graphLegend"></div>
+    </div>
+    <aside class="graph-panel" id="graphPanel"></aside>
+  </section>
+
+  <!-- ============ ANGLES MORTS ============ -->
+  <section id="tab-angles" class="tab">
+    <div class="tab-inner">
+      <h2>🎯 Angles morts &amp; angles d'attaque</h2>
+      <p class="hint">Les croisements que votre corpus ne couvre pas (encore). Chaque carte est une piste d'écriture potentielle — à valider par votre jugement, pas une vérité.</p>
+      <div class="note">
+        <strong>Comment lire cette page :</strong> un « angle mort » est une paire de thèmes
+        que vous documentez séparément mais que <em>aucune source ne croise</em>.
+        Un « pont » relie deux familles de thèmes distinctes : souvent les angles les plus originaux.
+        Une intersection vide peut aussi être vide… parce qu'elle est inintéressante. C'est vous qui tranchez.
+      </div>
+      <div id="gapList" class="gap-list"></div>
+      <div class="empty-state" id="gapsEmpty" hidden>
+        <div class="big">🎯</div>
+        Pas encore assez de matière : il faut au moins deux thèmes documentés par
+        <span id="gapMinLabel">2</span> sources chacun.<br>Continuez à déposer et classer des sources.
+      </div>
+
+      <hr class="sep">
+      <h3>Matrice des croisements</h3>
+      <p class="hint">Nombre de sources croisant chaque paire de thèmes. Les cases <span style="outline:2px dashed var(--series-8);outline-offset:1px;padding:0 4px">encadrées</span> sont des intersections vides entre thèmes documentés.</p>
+      <div class="heatmap-wrap" id="heatmapWrap"></div>
+    </div>
+  </section>
+
+  <!-- ============ TABLEAU DE BORD ============ -->
+  <section id="tab-bord" class="tab">
+    <div class="tab-inner">
+      <h2>Tableau de bord</h2>
+      <p class="hint">Où en est l'état de l'art, d'un coup d'œil.</p>
+      <div class="stat-row" id="statRow"></div>
+      <div class="dash-grid">
+        <div class="card">
+          <h3>Sources par thème</h3>
+          <div class="bar-chart" id="chartThemes"></div>
+        </div>
+        <div class="card">
+          <h3>Avancement de lecture</h3>
+          <div class="bar-chart" id="chartStatus"></div>
+          <hr class="sep">
+          <h3>Sources par décennie de publication</h3>
+          <div class="bar-chart" id="chartYears"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Drawer d'édition -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3 style="margin:0">Modifier la source</h3>
+    <button class="btn ghost small" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <button class="btn primary" id="drawerSave">Enregistrer</button>
+    <button class="btn" id="drawerCancel">Annuler</button>
+    <span style="flex:1"></span>
+    <button class="btn danger" id="drawerDelete">Supprimer</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="importFileInput" accept=".json,.bib,.bibtex,.txt" hidden>
+
+<script src="vendor/d3.v7.min.js"></script>
+<script src="js/store.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/bibtex.js"></script>
+<script src="js/graph.js"></script>
+<script src="js/sample.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
